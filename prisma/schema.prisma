@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  name        String?
+  generations Generation[]
+  createdAt   DateTime     @default(now())
+}
+
+model Generation {
+  id        String   @id @default(cuid())
+  type      String   // 'ads', 'carousel', 'landing_prompt'
+  prompt    String?  @db.Text
+  imageUrl  String?  @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}

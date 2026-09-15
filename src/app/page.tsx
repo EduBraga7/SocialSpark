@@ -128,13 +128,23 @@ export default function Home() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-          <button
-            onClick={generateAds}
-            disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors disabled:opacity-50"
-          >
-            {loading ? 'Analisando...' : 'Gerar'}
-          </button>
+          <Show when="signed-in">
+            <button
+              onClick={generateAds}
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Analisando...' : 'Gerar'}
+            </button>
+          </Show>
+          <Show when="signed-out">
+            <Link
+              href="/login"
+              className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full transition-colors"
+            >
+              Fazer Login para Gerar
+            </Link>
+          </Show>
         </div>
       </div>
 

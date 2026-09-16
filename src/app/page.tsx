@@ -17,11 +17,12 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-// ─── Quick-action cards (equivalente aos "sugestões" do AdGenius) ─────────────
+// ─── Quick-action cards ───────────────────────────────────────────────────────
 const quickActions = [
   {
     icon: Images,
     label: 'Anúncios',
+    labelShort: 'Anúncios',
     description: 'Gere imagens prontas para impulsionar no Instagram ou Facebook.',
     type: 'ads',
     color: 'text-blue-600',
@@ -29,7 +30,8 @@ const quickActions = [
   },
   {
     icon: LayoutGrid,
-    label: 'Carrossel educativo',
+    label: 'Carrossel',
+    labelShort: 'Carrossel',
     description: 'Crie slides para engajar seu público com conteúdo de valor.',
     type: 'carousel',
     color: 'text-purple-600',
@@ -37,7 +39,8 @@ const quickActions = [
   },
   {
     icon: Globe,
-    label: 'Prompt de Landing Page',
+    label: 'Landing Page',
+    labelShort: 'Landing',
     description: 'Gere um super prompt para criar o site da sua marca no ChatGPT.',
     type: 'landing_prompt',
     color: 'text-emerald-600',
@@ -115,14 +118,14 @@ export default function Home() {
   return (
     <div className="flex flex-col flex-1 min-h-full">
       {/* ── Área principal ─────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-10 lg:px-8 lg:py-16">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8 lg:py-16">
 
         {/* Heading */}
-        <div className="text-center mb-8 max-w-2xl">
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">
+        <div className="text-center mb-6 max-w-2xl px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">
             O que criamos hoje? ✨
           </h1>
-          <p className="text-gray-500 text-base md:text-lg">
+          <p className="text-gray-500 text-sm sm:text-base md:text-lg">
             Cole o link do Instagram ou site da sua marca e escolha o que quer gerar.
           </p>
         </div>
@@ -188,48 +191,52 @@ export default function Home() {
             )}
 
             {/* Barra inferior do input */}
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-              {/* Seletor de tipo */}
-              <div className="flex gap-1">
+            <div className="flex flex-col gap-2 px-4 py-3 border-t border-gray-100">
+              {/* Seletor de tipo — responsivo */}
+              <div className="flex gap-1 flex-wrap">
                 {quickActions.map((qa) => (
                   <button
                     key={qa.type}
                     onClick={() => setAdType(qa.type)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       adType === qa.type
                         ? `${qa.bg} ${qa.color}`
                         : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
                     }`}
                   >
                     <qa.icon size={13} />
-                    {qa.label}
+                    <span className="hidden sm:inline">{qa.label}</span>
+                    <span className="sm:hidden">{qa.labelShort}</span>
                   </button>
                 ))}
               </div>
 
-              {/* Botão enviar */}
-              <Show when="signed-in">
-                <button
-                  onClick={generateAds}
-                  disabled={loading || !url}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40 transition-all shadow-sm"
-                  aria-label="Gerar"
-                >
-                  {loading ? (
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <ArrowUp size={16} />
-                  )}
-                </button>
-              </Show>
-              <Show when="signed-out">
-                <Link
-                  href="/login"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-700 text-white text-xs font-bold rounded-xl transition-colors"
-                >
-                  Entrar para gerar
-                </Link>
-              </Show>
+              {/* Botão enviar — linha separada em mobile */}
+              <div className="flex justify-end">
+                <Show when="signed-in">
+                  <button
+                    onClick={generateAds}
+                    disabled={loading || !url}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold disabled:opacity-40 transition-all shadow-sm"
+                    aria-label="Gerar"
+                  >
+                    {loading ? (
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <ArrowUp size={14} />
+                    )}
+                    <span>{loading ? 'Gerando...' : 'Gerar'}</span>
+                  </button>
+                </Show>
+                <Show when="signed-out">
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-700 text-white text-xs font-bold rounded-xl transition-colors"
+                  >
+                    Entrar para gerar
+                  </Link>
+                </Show>
+              </div>
             </div>
           </div>
 
@@ -260,18 +267,18 @@ export default function Home() {
 
       {/* ── Resultados ─────────────────────────────────────────────────────── */}
       {adData && (
-        <div className="w-full px-4 pb-16 lg:px-8 flex flex-col items-center">
+        <div className="w-full px-4 pb-16 sm:px-6 lg:px-8 flex flex-col items-center">
           {/* Cabeçalho do resultado */}
-          <div className="w-full max-w-4xl mb-8 flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-5 py-4 shadow-sm">
-            <div className="p-2 bg-green-50 rounded-xl">
-              <Sparkles size={20} className="text-green-600" />
+          <div className="w-full max-w-4xl mb-6 flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
+            <div className="p-2 bg-green-50 rounded-xl shrink-0">
+              <Sparkles size={18} className="text-green-600" />
             </div>
-            <div className="flex-1">
-              <p className="font-semibold text-gray-800 text-sm">Conteúdo gerado com sucesso!</p>
-              <p className="text-xs text-gray-400">
-                Cor da marca extraída:{' '}
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-800 text-sm">Conteúdo gerado! ✨</p>
+              <p className="text-xs text-gray-400 flex items-center gap-1 flex-wrap">
+                Cor da marca:
                 <span
-                  className="inline-block w-3 h-3 rounded-full align-middle mx-1"
+                  className="inline-block w-3 h-3 rounded-full align-middle"
                   style={{ backgroundColor: adData.brandColor }}
                 />
                 <code className="text-gray-600">{adData.brandColor}</code>
@@ -279,7 +286,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => { setAdData(null); setUrl(''); }}
-              className="text-xs text-gray-400 hover:text-gray-700 font-medium transition-colors"
+              className="text-xs text-gray-400 hover:text-gray-700 font-medium transition-colors shrink-0"
             >
               Novo
             </button>
@@ -360,7 +367,7 @@ export default function Home() {
                   <p className="text-xs text-gray-500 mb-3">
                     A URL da logo e fotos reais do nicho já foram inseridas automaticamente dentro do Super Prompt abaixo!
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
                     <button
                       onClick={async () => {
                         try {

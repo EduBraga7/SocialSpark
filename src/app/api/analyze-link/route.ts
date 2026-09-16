@@ -162,21 +162,14 @@ export async function POST(request: Request) {
           candidatePosts.map(p => `[POST #${p.index}]:\n- Legenda: "${p.caption}"\n- Hashtags: [${p.hashtags.join(', ')}]\n- URL da Imagem: ${p.url}`).join('\n\n')
         : 'Nenhum post recente extraído.';
 
-      const stackGuidelines = outputStack === 'nextjs' ? `
-        STACK TÉCNICA OBRIGATÓRIA: NEXT.JS (APP ROUTER) + TYPESCRIPT + REACT + TAILWIND CSS
-        - O código deve ser entregue como um ÚNICO componente React completo pronto para colar diretamente em "src/app/page.tsx" de um projeto Next.js.
-        - Comece obrigatoriamente com 'use client'; no topo.
-        - Importe e use ícones modernos da biblioteca "lucide-react" (ex: MessageCircle, Sparkles, Check, ChevronDown, ShoppingBag, ArrowRight, ShieldCheck, Heart, Star, Instagram).
-        - Use Tailwind CSS para estilização moderna, limpa e responsiva (mobile-first, sm:, md:, lg:).
-        - Use useState do React para controlar o FAQ interativo (accordion) e menu mobile caso necessário.
-        - Código 100% completo, sem omissões ou reticências ("// adicione o resto"), pronto para salvar e rodar!
+      const stackInstructionForPrompt = outputStack === 'nextjs' ? `
+          * STACK TÉCNICA QUE A IA DEVE ENTREGAR: Next.js (App Router) em TypeScript ('use client'), com Tailwind CSS e ícones da biblioteca lucide-react, pronto para colar diretamente em "src/app/page.tsx".
       ` : `
-        STACK TÉCNICA: ARQUIVO ÚNICO HTML + TAILWIND CSS VIA CDN
-        - Entregar um arquivo único HTML completo com <!DOCTYPE html>, Tailwind CSS via CDN (<script src="https://cdn.tailwindcss.com"></script>), Google Fonts e micro-interações, pronto para abrir direto no navegador.
+          * STACK TÉCNICA QUE A IA DEVE ENTREGAR: Arquivo único HTML completo com Tailwind CSS via CDN (<script src="https://cdn.tailwindcss.com"></script>), Google Fonts e micro-interações.
       `;
 
       const prompt = adType === 'landing_prompt' ? `
-        Você é um Diretor de Criação, Especialista em Marketing Digital de Alta Conversão e Engenheiro Frontend Sênior especializado em Next.js.
+        Você é um Engenheiro de Prompts Especialista em Marketing e Desenvolvimento Web.
         
         DADOS DA MARCA:
         ---
@@ -186,14 +179,14 @@ export async function POST(request: Request) {
         ${postsContext}
 
         SUA MISSÃO:
-        1. CURADORIA INTELIGENTE ANTI-OFFTOPIC (REGRA DE OURO):
+        1. CURADORIA INTELIGENTE ANTI-OFFTOPIC:
            Analise rigorosamente as legendas e o conteúdo de cada post recente listado acima:
            - SELECIONE de 3 a 4 posts que sejam ESTRITAMENTE sobre PRODUTOS, PEÇAS AUTORAIS, SERVIÇOS OU TRABALHOS COMERCIAIS da marca (relacionados ao nicho ${scrapedData}).
            - É TERMINANTEMENTE PROIBIDO selecionar posts de:
              * Pedidos de ajuda, vaquinhas, doações ou assuntos pessoais/familiares.
-             * Fotos pessoais, selfies sem produto, fotos de família, crianças ou momentos privados.
+             * Fotos pessoais, selfies sem produto, fotos de família ou momentos privados.
              * Memes, piadas soltas ou conteúdos de humor que não apresentem produtos reais.
-             * Passeios, viagens, vlogs ou hobbies pessoais (ex: passeios, aulas de dança, balé).
+             * Passeios, viagens, vlogs ou hobbies pessoais (ex: passeios, aulas de balé).
              * Avisos operacionais sem foto de produto (ex: feriados, recesso).
            - Se não houver posts suficientes de produtos, complemente com fotos de produtos reais de artesanato/nicho de alta qualidade do Unsplash.
 
@@ -203,30 +196,27 @@ export async function POST(request: Request) {
            - "description": Breve frase persuasiva destacando o benefício/charme da peça
            - "url": A URL exata da imagem selecionada
 
-        2. DIRETRIZES OBRIGATÓRIAS DE CONVERSÃO - CTA 100% WHATSAPP:
-           - Link Base do WhatsApp: "${cleanWhatsappUrl}"
-           - BOTÃO FLUTUANTE DO WHATSAPP (OBRIGATÓRIO):
-             Deve ter um botão flutuante verde (bg-emerald-500 hover:bg-emerald-600 text-white shadow-2xl) fixo no canto inferior direito ("fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3.5 rounded-full hover:scale-105 transition-all shadow-lg font-bold text-sm") com ícone do WhatsApp / MessageCircle e texto "Falar no WhatsApp".
-             O link deve ser: "${cleanWhatsappUrl}?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20tirar%20uma%20d%C3%BAvida."
-           - NAVBAR (CABEÇALHO):
-             Botão CTA destacado: "Falar no WhatsApp" apontando para o link do WhatsApp.
-           - HERO SECTION (BANNER PRINCIPAL):
-             Botão de CTA primário em destaque: "Fazer Pedido no WhatsApp" (com ícone do WhatsApp e efeito hover marcante).
-             Botão secundário suave: "Ver Perfil no Instagram" (apontando para ${url}).
-           - CARDS DE PRODUTOS / CATÁLOGO:
-             O botão de CTA de CADA card de produto deve ter o texto "Encomendar no WhatsApp" ou "Pedir no WhatsApp" e o link do WhatsApp DEVE vir personalizado com o nome exato da peça!
-             Exemplo: "${cleanWhatsappUrl}?text=Ol%C3%A1!%20Gostei%20do(a)%20[NOME_DO_PRODUTO]%20e%20gostaria%20de%20fazer%20uma%20encomenda."
-           - HERO FINAL / BANNER DE FECHAMENTO:
-             Chamada irresistível com botão para atendimento imediato e personalizado via WhatsApp.
+        2. GERAR O SUPER PROMPT (COMANDO DE TEXTO PARA COPIAR E COLAR):
+           🚨 ATENÇÃO CRÍTICA: Você NÃO DEVE gerar o código aqui! Você é um GERADOR DE PROMPTS!
+           O campo "landingPagePrompt" deve ser um TEXTO DE COMANDO rico e ultra estruturado, começando com "Atue como um Engenheiro Frontend Sênior e Copywriter de Alta Conversão...", que o usuário vai copiar do SocialSpark e colar em um chat de IA (como ChatGPT, Claude ou v0) para pedir que ELES gerem o código.
 
-        3. STACK E IMPLEMENTAÇÃO DO SUPER PROMPT:
-           ${stackGuidelines}
-           - Uso OBRIGATÓRIO da Logo Real: <img src="${safeLogoUrl}" alt="Logo da Marca" class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover shadow-sm ring-2 ring-white" /> no Header e Rodapé.
-           - Uso OBRIGATÓRIO de cada uma das fotos reais curadas:
-             * Inserir a foto de "hero" em destaque no Hero Banner com cantos arredondados e sombra elegante.
-             * Inserir as fotos dos produtos ("product_1", "product_2", "product_3") nos respectivos cards da seção de catálogo/produtos com os nomes e descrições reais definidos na curadoria!
-             * PROIBIR expressamente o uso de emojis (como 🌸, 🧴) ou caixas vazias como substitutos de imagens.
-           - Estrutura completa: Navbar fixa com backdrop blur, Hero de impacto, Seção de Diferenciais, História da Marca, Catálogo com as fotos reais, FAQ interativo com accordion, Banner Final de CTA e Rodapé com logo real.
+           O Super Prompt que você vai redigir DEVE conter de forma clara e organizada:
+           a) O papel/persona da IA desenvolvedora ("Atue como...").
+           b) O contexto da marca: Nome, nicho, biografia e link oficial (${url}).
+           c) A paleta de cores recomendada (código HEX).
+           d) A URL EXATA da Logo Oficial: "${safeLogoUrl}" (com ordem expressa de usar na Navbar e Rodapé, proibindo placeholders como 'logo.png').
+           e) As FOTOS REAIS APROVADAS na curadoria com suas URLs exatas:
+              - A foto de Hero para o banner de destaque.
+              - As fotos dos produtos com títulos e descrições para os cards do catálogo.
+              - Ordem expressa de NÃO usar fotos genéricas ou emojis no lugar de fotos.
+           f) A estratégia completa de WhatsApp:
+              - Número/Link oficial do WhatsApp: "${cleanWhatsappUrl}".
+              - Botão Flutuante do WhatsApp fixo no canto inferior direito com pulso.
+              - Botão de CTA no Hero: "Fazer Pedido no WhatsApp".
+              - Botão de CTA em cada card de produto: abrindo o WhatsApp com mensagem personalizada citando o nome da peça (ex: "${cleanWhatsappUrl}?text=Ol%C3%A1!%20Gostei%20do(a)%20[NOME_DO_PRODUTO]%20e%20gostaria%20de%20fazer%20uma%20encomenda.").
+           g) A exigência técnica da stack:
+              ${stackInstructionForPrompt}
+           h) A estrutura esperada da página: Navbar, Hero, Seção de Diferenciais, História da Marca, Catálogo com fotos reais, FAQ com accordion, Banner CTA final e Rodapé.
 
         Retorne EXATAMENTE um objeto JSON válido:
         {
@@ -248,7 +238,7 @@ export async function POST(request: Request) {
               "url": "URL da foto selecionada"
             }
           ],
-          "landingPagePrompt": "O super prompt completo com as URLs reais das fotos e os links personalizados do WhatsApp mapeados no código"
+          "landingPagePrompt": "Texto completo do Super Prompt (começando com 'Atue como...' e com todas as instruções detalhadas para o ChatGPT/Claude)"
         }
       ` : adType === 'carousel' ? `
         Você é um diretor de arte e redator publicitário genial.
